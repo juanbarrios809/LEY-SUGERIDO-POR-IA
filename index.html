@@ -3,215 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Constitución Política de Colombia</title>
+    <title>Visualizador de Leyes Moderno</title>
     <style>
-        :root { 
-            --primary-text: #000000; 
-            --secondary-text: #757575; 
-            --line: #e0e0e0;
-            --bg: #ffffff; 
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-light: #f4f7f6;
+            --text-dark: #333;
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg); 
-            margin: 0; 
-            color: var(--primary-text);
-        }
-
-        .app-container { width: 100%; max-width: 600px; margin: auto; padding-bottom: 50px; }
-
-        /* Cabecera Estilo Serif */
-        .header { 
-            text-align: center; 
-            padding: 40px 20px; 
-            border-bottom: 1px solid var(--line);
-        }
-        .header h1 { 
-            font-family: "Times New Roman", Times, serif; 
-            font-weight: 400; 
-            font-size: 1.8rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
             margin: 0;
-        }
-
-        /* Selector de Listas (Pestañas) */
-        .selector-tabs { 
-            display: flex; 
-            justify-content: center; 
-            gap: 20px; 
-            padding: 15px;
-            background: #fafafa;
-        }
-        .tab-btn { 
-            background: none; border: none; font-size: 0.8rem; font-weight: bold; 
-            color: var(--secondary-text); cursor: pointer; text-transform: uppercase;
-        }
-        .tab-btn.active { color: var(--primary-text); border-bottom: 2px solid black; }
-
-        /* Lista de Registros */
-        .lista-datos { list-style: none; margin: 0; padding: 0; }
-        
-        /* Contenedor de cada fila */
-        .item-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 22px 20px;
-            border-bottom: 1px solid var(--line);
-            cursor: pointer;
-            transition: background 0.2s;
+            color: var(--text-dark);
+        }
+
+        /* Índice Lateral */
+        nav.sidebar {
+            width: 250px;
+            height: 100vh;
+            background: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        nav.sidebar h2 { font-size: 1.2rem; border-bottom: 1px solid #555; padding-bottom: 10px; }
+        
+        nav.sidebar ul { list-style: none; padding: 0; }
+        
+        nav.sidebar a {
+            color: #bdc3c7;
             text-decoration: none;
-            color: inherit;
-            width: 100%;
-            background: none;
-            border-left: none; border-right: none; border-top: none;
+            display: block;
+            padding: 10px 0;
+            transition: 0.3s;
         }
-        .item-row:hover { background-color: #f9f9f9; }
 
-        .item-info { display: flex; flex-direction: column; text-align: left; }
-        .item-titulo { font-size: 1.1rem; font-weight: 500; }
-        .item-subtitulo { font-size: 0.9rem; color: var(--secondary-text); margin-top: 4px; }
+        nav.sidebar a:hover { color: white; padding-left: 10px; }
 
-        .item-meta { display: flex; align-items: center; gap: 10px; color: var(--secondary-text); }
-        .item-rango { font-size: 0.9rem; }
-        .arrow { font-size: 1.2rem; font-weight: 300; }
-
-        /* Vista Detalle */
-        #vista-detalle { display: none; padding: 20px; }
-        .btn-volver { 
-            background: none; border: none; font-weight: bold; cursor: pointer; 
-            margin-bottom: 30px; display: flex; align-items: center; gap: 10px;
+        /* Contenido Principal */
+        main {
+            flex: 1;
+            padding: 40px;
+            background: white;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        .ficha { margin-bottom: 30px; }
-        .label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: var(--secondary-text); letter-spacing: 1px; }
-        .valor { font-size: 1.1rem; margin-top: 8px; line-height: 1.7; }
+
+        .status-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        article {
+            margin-bottom: 40px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-color);
+            background: var(--bg-light);
+        }
+
+        .summary {
+            font-style: italic;
+            color: #666;
+            background: #fff;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            margin-bottom: 15px;
+        }
+
+        h1 { color: var(--primary-color); }
+        h3 { color: var(--accent-color); margin-top: 0; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            nav.sidebar { width: 100%; height: auto; position: relative; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div id="vista-lista">
-            <div class="header">
-                <h1>Constitución Política<br>de Colombia</h1>
-            </div>
+    <nav class="sidebar">
+        <h2>Índice</h2>
+        <ul>
+            <li><a href="#cap1">Capítulo I</a></li>
+            <li><a href="#art1">Art. 1: Definiciones</a></li>
+            <li><a href="#art2">Art. 2: Ámbito</a></li>
+            <li><a href="#cap2">Capítulo II</a></li>
+            <li><a href="#art3">Art. 3: Derechos</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <header>
+            <span class="status-badge">LEY VIGENTE</span>
+            <h1>Ley de Protección de Datos Digitales</h1>
+            <p><strong>Última reforma:</strong> 12 de octubre de 2023</p>
+        </header>
+
+        <hr>
+
+        <section id="cap1">
+            <h2>Capítulo I: Disposiciones Generales</h2>
             
-            <div class="selector-tabs">
-                <button class="tab-btn active" onclick="cambiarFuente('principal', this)">Constitución</button>
-                <button class="tab-btn" onclick="cambiarFuente('lista2', this)">Códigos</button>
-                <button class="tab-btn" onclick="cambiarFuente('lista3', this)">Leyes</button>
-            </div>
+            <article id="art1">
+                <h3>Artículo 1. Definiciones</h3>
+                <div class="summary">
+                    <strong>En resumen:</strong> Este artículo define qué se considera "dato personal" dentro de la ley.
+                </div>
+                <p>Se entenderá por datos personales cualquier información relativa a una persona física identificada o identificable...</p>
+            </article>
 
-            <div id="status" style="padding: 40px; text-align: center; color: var(--secondary-text);">Cargando...</div>
-            <div id="contenedor-lista" class="lista-datos"></div>
-        </div>
+            <article id="art2">
+                <h3>Artículo 2. Ámbito de Aplicación</h3>
+                <p>La presente ley se aplicará a todo tratamiento de datos personales realizado en el territorio nacional por empresas públicas o privadas.</p>
+            </article>
+        </section>
 
-        <div id="vista-detalle">
-            <button class="btn-volver" onclick="regresar()">← VOLVER AL ÍNDICE</button>
-            <div id="contenido-ficha"></div>
-        </div>
-    </div>
+        <section id="cap2">
+            <h2 id="cap2">Capítulo II: Derechos del Titular</h2>
+            <article id="art3">
+                <h3>Artículo 3. Derecho de Acceso</h3>
+                <div class="summary">
+                    <strong>En resumen:</strong> Tienes derecho a pedirle a cualquier empresa que te diga qué datos tienen sobre ti.
+                </div>
+                <p>El titular de los datos tendrá derecho a obtener del responsable del tratamiento la confirmación de si se están tratando o no sus datos.</p>
+            </article>
+        </section>
+    </main>
 
-    <script>
-        const FUENTES = {
-            principal: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRr8NFZhCq5GALDDC5QzyIGI6DRblNuHItzFP94KY1j9ZExpyfkf6PXMAQgbZxLUtEqakeRcXOqcP0q/pub?output=csv',
-            lista2: 'URL_LISTA_2',
-            lista3: 'URL_LISTA_3'
-        };
-
-        let DB = [];
-
-        function parseCSV(text) {
-            const result = [];
-            let row = [], cell = '', inQuotes = false;
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i], next = text[i+1];
-                if (char === '"') {
-                    if (inQuotes && next === '"') { cell += '"'; i++; }
-                    else { inQuotes = !inQuotes; }
-                } 
-                else if (char === ',' && !inQuotes) { row.push(cell.trim()); cell = ''; }
-                else if ((char === '\n' || char === '\r') && !inQuotes) {
-                    if (cell || row.length > 0) { row.push(cell.trim()); result.push(row); cell = ''; row = []; }
-                } 
-                else { cell += char; }
-            }
-            if (row.length > 0 || cell) { row.push(cell.trim()); result.push(row); }
-            return result;
-        }
-
-        async function cargarDatos(url) {
-            const status = document.getElementById('status');
-            const lista = document.getElementById('contenedor-lista');
-            status.style.display = 'block';
-            lista.innerHTML = '';
-
-            try {
-                const res = await fetch(url);
-                const rawData = await res.text();
-                const todasLasFilas = parseCSV(rawData);
-                todasLasFilas.shift(); 
-                DB = todasLasFilas.filter(f => f[0] && f[0].length > 0);
-                renderizar(DB);
-                status.style.display = 'none';
-            } catch (e) {
-                status.innerText = "Error al cargar datos.";
-            }
-        }
-
-        function renderizar(datos) {
-            const lista = document.getElementById('contenedor-lista');
-            lista.innerHTML = '';
-            datos.forEach((fila, index) => {
-                // fila[0] = Capítulo, fila[1] = Nombre, fila[2] = Rango Artículos
-                const btn = document.createElement('button');
-                btn.className = 'item-row';
-                btn.onclick = () => verDetalle(index);
-                btn.innerHTML = `
-                    <div class="item-info">
-                        <span class="item-titulo">${fila[0]}</span>
-                        <span class="item-subtitulo">${fila[1] || ''}</span>
-                    </div>
-                    <div class="item-meta">
-                        <span class="item-rango">${fila[2] || ''}</span>
-                        <span class="arrow">›</span>
-                    </div>
-                `;
-                lista.appendChild(btn);
-            });
-        }
-
-        function cambiarFuente(clave, elemento) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            elemento.classList.add('active');
-            cargarDatos(FUENTES[clave]);
-        }
-
-        function verDetalle(idx) {
-            const r = DB[idx];
-            const labels = ["Sección", "Título", "Artículos", "Contenido"];
-            let html = '';
-            for(let i=0; i<4; i++) {
-                if(r[i]) {
-                    html += `<div class="ficha">
-                                <span class="label">${labels[i]}</span>
-                                <div class="valor">${r[i]}</div>
-                             </div>`;
-                }
-            }
-            document.getElementById('contenido-ficha').innerHTML = html;
-            document.getElementById('vista-lista').style.display = 'none';
-            document.getElementById('vista-detalle').style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        function regresar() {
-            document.getElementById('vista-lista').style.display = 'block';
-            document.getElementById('vista-detalle').style.display = 'none';
-        }
-
-        cargarDatos(FUENTES.principal);
-    </script>
 </body>
 </html>
