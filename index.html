@@ -3,74 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Ley - Google Sheets</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <title>Lista desde Google Sheets</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f8f9fa; color: #333; }
-        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
-        .table-container { overflow-x: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background-color: #34495e; color: white; padding: 15px; text-align: left; text-transform: uppercase; font-size: 0.9rem; }
-        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.6; }
-        tr:hover { background-color: #fcfcfc; }
-        
-        /* Estilos por columna */
-        .col-cap { font-weight: bold; color: #e67e22; width: 10%; }
-        .col-nom { font-weight: 600; color: #2980b9; width: 20%; }
-        .col-art { font-weight: bold; width: 10%; text-align: center; }
-        .col-cont { width: 60%; text-align: justify; white-space: pre-wrap; }
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 500px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 10px; border-bottom: 1px solid #eee; color: #555; }
+        li:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
-    <h1>Estructura de la Ley (IA)</h1>
-    
-    <div id="loading" style="text-align: center;">Cargando datos desde Google Sheets...</div>
-    
-    <div class="table-container">
-        <table id="tabla-ley" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Capítulos</th>
-                    <th>Nombre</th>
-                    <th>Artículos</th>
-                    <th>Contenido</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla"></tbody>
-        </table>
-    </div>
+<div class="container">
+    <h2>Elementos de la Columna A</h2>
+    <ul id="lista-elementos">
+        <li>Cargando datos...</li>
+    </ul>
+</div>
 
-    <script>
-        // PEGA AQUÍ TU ENLACE DE GOOGLE SHEETS (DEBE TERMINAR EN output=csv)
-        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbTeVPW_y3RyVjkLyxailFMH0WNRy0v16-pFQF6vHZ8LDnhlSJvSbQ7lQDfCgZnyHMQJVHlnYMIH4F/pub?output=csv';
+<script>
+    // REEMPLAZA ESTE ENLACE con el que copiaste al "Publicar en la web"
+    const urlCSV = 'TU_ENLACE_CSV_AQUÍ';
 
-        Papa.parse(googleSheetUrl, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                const cuerpo = document.getElementById('cuerpo-tabla');
-                
-                results.data.forEach(fila => {
-                    const tr = document.createElement('tr');
-                    // Usamos nombres de columna exactos o alternativos por si hay tildes
-                    tr.innerHTML = `
-                        <td class="col-cap">${fila['capítulos'] || fila['Capítulos'] || ''}</td>
-                        <td class="col-nom">${fila['nombre'] || fila['Nombre'] || ''}</td>
-                        <td class="col-art">${fila['artículos'] || fila['Artículos'] || ''}</td>
-                        <td class="col-cont">${fila['contenido'] || fila['Contenido'] || ''}</td>
-                    `;
-                    cuerpo.appendChild(tr);
-                });
+    async function obtenerDatos() {
+        try {
+            const respuesta = await fetch(urlCSV);
+            const datosTexto = await respuesta.text();
+            
+            // Convertimos el CSV en filas
+            const filas = datosTexto.split('\n');
+            const listaUl = document.getElementById('lista-elementos');
+            listaUl.innerHTML = ''; // Limpiamos el mensaje de carga
 
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('tabla-ley').style.display = 'table';
-            },
-            error: function() {
-                document.getElementById('loading').innerHTML = "Error: Asegúrate de que el archivo esté 'Publicado en la web' como CSV.";
-            }
-        });
-    </script>
+            filas.forEach(fila => {
+                // Separamos por comas y tomamos el primer elemento [0]
+                const columnas = fila.split(',');
+                const primerElemento = columnas[0].trim();
+
+                if (primerElemento) {
+                    const li = document.createElement('li');
+                    li.textContent = primerElemento;
+                    listaUl.appendChild(li);
+                }
+            });
+        } catch (error) {
+            console.error('Error al obtener los datos:', error);
+            document.getElementById('lista-elementos').innerHTML = '<li>Error al cargar los datos.</li>';
+        }
+    }
+
+    obtenerDatos();
+</script>
+
 </body>
 </html>
