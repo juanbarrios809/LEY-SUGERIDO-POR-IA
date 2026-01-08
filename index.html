@@ -3,73 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Ley - IA</title>
+    <title>Visualizador de Ley - Google Sheets</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
-        h1 { color: #333; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th { background-color: #2c3e50; color: white; padding: 12px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #ddd; vertical-align: top; }
-        tr:hover { background-color: #f1f1f1; }
-        .capitulo { font-weight: bold; color: #2980b9; width: 10%; }
-        .nombre { font-weight: bold; width: 15%; }
-        .articulos { width: 10%; text-align: center; }
-        .contenido { width: 65%; text-align: justify; white-space: pre-wrap; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f8f9fa; color: #333; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        .table-container { overflow-x: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #34495e; color: white; padding: 15px; text-align: left; text-transform: uppercase; font-size: 0.9rem; }
+        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: top; line-height: 1.6; }
+        tr:hover { background-color: #fcfcfc; }
+        
+        /* Estilos por columna */
+        .col-cap { font-weight: bold; color: #e67e22; width: 10%; }
+        .col-nom { font-weight: 600; color: #2980b9; width: 20%; }
+        .col-art { font-weight: bold; width: 10%; text-align: center; }
+        .col-cont { width: 60%; text-align: justify; white-space: pre-wrap; }
     </style>
 </head>
 <body>
 
-    <h1>Contenido de la Ley Sugerida</h1>
+    <h1>Estructura de la Ley (IA)</h1>
     
-    <div id="loading" style="text-align: center;">Cargando datos...</div>
+    <div id="loading" style="text-align: center;">Cargando datos desde Google Sheets...</div>
     
-    <table id="tabla-ley" style="display: none;">
-        <thead>
-            <tr>
-                <th>Capítulos</th>
-                <th>Nombre</th>
-                <th>Artículos</th>
-                <th>Contenido</th>
-            </tr>
-        </thead>
-        <tbody id="cuerpo-tabla">
-            </tbody>
-    </table>
+    <div class="table-container">
+        <table id="tabla-ley" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Capítulos</th>
+                    <th>Nombre</th>
+                    <th>Artículos</th>
+                    <th>Contenido</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla"></tbody>
+        </table>
+    </div>
 
     <script>
-        // URL del archivo CSV (Asegúrate de que sea la versión 'Raw' de GitHub)
-        const csvUrl = https://docs.google.com/spreadsheets/d/e/2PACX-1vRbTeVPW_y3RyVjkLyxailFMH0WNRy0v16-pFQF6vHZ8LDnhlSJvSbQ7lQDfCgZnyHMQJVHlnYMIH4F/pub?output=csv'; 
+        // PEGA AQUÍ TU ENLACE DE GOOGLE SHEETS (DEBE TERMINAR EN output=csv)
+        const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRbTeVPW_y3RyVjkLyxailFMH0WNRy0v16-pFQF6vHZ8LDnhlSJvSbQ7lQDfCgZnyHMQJVHlnYMIH4F/pub?output=csv';
 
-        // Función para cargar y procesar el CSV
-        Papa.parse(csvUrl, {
+        Papa.parse(googleSheetUrl, {
             download: true,
-            header: true, // Para usar los nombres de las columnas
+            header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                const data = results.data;
-                const tabla = document.getElementById('tabla-ley');
                 const cuerpo = document.getElementById('cuerpo-tabla');
-                const loading = document.getElementById('loading');
-
-                data.forEach(fila => {
+                
+                results.data.forEach(fila => {
                     const tr = document.createElement('tr');
-                    
+                    // Usamos nombres de columna exactos o alternativos por si hay tildes
                     tr.innerHTML = `
-                        <td class="capitulo">${fila['capítulos'] || fila['Capítulos'] || ''}</td>
-                        <td class="nombre">${fila['nombre'] || fila['Nombre'] || ''}</td>
-                        <td class="articulos">${fila['artículos'] || fila['Artículos'] || ''}</td>
-                        <td class="contenido">${fila['contenido'] || fila['Contenido'] || ''}</td>
+                        <td class="col-cap">${fila['capítulos'] || fila['Capítulos'] || ''}</td>
+                        <td class="col-nom">${fila['nombre'] || fila['Nombre'] || ''}</td>
+                        <td class="col-art">${fila['artículos'] || fila['Artículos'] || ''}</td>
+                        <td class="col-cont">${fila['contenido'] || fila['Contenido'] || ''}</td>
                     `;
                     cuerpo.appendChild(tr);
                 });
 
-                loading.style.display = 'none';
-                tabla.style.display = 'table';
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('tabla-ley').style.display = 'table';
             },
-            error: function(err) {
-                document.getElementById('loading').innerHTML = "Error al cargar el archivo. Verifica la URL.";
-                console.error(err);
+            error: function() {
+                document.getElementById('loading').innerHTML = "Error: Asegúrate de que el archivo esté 'Publicado en la web' como CSV.";
             }
         });
     </script>
