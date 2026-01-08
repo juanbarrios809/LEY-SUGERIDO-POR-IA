@@ -3,45 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor de Constitución y Leyes</title>
+    <title>Constitución Política de Colombia</title>
     <style>
-        :root { --primary: #1a365d; --accent: #2563eb; --bg: #f0f2f5; --text: #2d3748; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 550px; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        :root { 
+            --primary-text: #000000; 
+            --secondary-text: #757575; 
+            --line: #e0e0e0;
+            --bg: #ffffff; 
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg); 
+            margin: 0; 
+            color: var(--primary-text);
+        }
+
+        .app-container { width: 100%; max-width: 600px; margin: auto; padding-bottom: 50px; }
+
+        /* Cabecera Estilo Serif */
+        .header { 
+            text-align: center; 
+            padding: 40px 20px; 
+            border-bottom: 1px solid var(--line);
+        }
+        .header h1 { 
+            font-family: "Times New Roman", Times, serif; 
+            font-weight: 400; 
+            font-size: 1.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        /* Selector de Listas (Pestañas) */
+        .selector-tabs { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            padding: 15px;
+            background: #fafafa;
+        }
+        .tab-btn { 
+            background: none; border: none; font-size: 0.8rem; font-weight: bold; 
+            color: var(--secondary-text); cursor: pointer; text-transform: uppercase;
+        }
+        .tab-btn.active { color: var(--primary-text); border-bottom: 2px solid black; }
+
+        /* Lista de Registros */
+        .lista-datos { list-style: none; margin: 0; padding: 0; }
         
-        .header { background: var(--primary); color: white; padding: 25px; text-align: center; }
-        .header h1 { margin: 0; font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase; }
+        /* Contenedor de cada fila */
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 20px;
+            border-bottom: 1px solid var(--line);
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            background: none;
+            border-left: none; border-right: none; border-top: none;
+        }
+        .item-row:hover { background-color: #f9f9f9; }
 
-        /* Selector de Listas */
-        .selector-tabs { display: flex; background: #edf2f7; padding: 5px; gap: 5px; }
-        .tab-btn { flex: 1; border: none; padding: 10px; cursor: pointer; border-radius: 8px; font-weight: 600; color: #4a5568; transition: 0.3s; }
-        .tab-btn.active { background: var(--accent); color: white; }
+        .item-info { display: flex; flex-direction: column; text-align: left; }
+        .item-titulo { font-size: 1.1rem; font-weight: 500; }
+        .item-subtitulo { font-size: 0.9rem; color: var(--secondary-text); margin-top: 4px; }
 
-        .lista-datos { list-style: none; margin: 0; padding: 15px; }
-        .item-btn { width: 100%; padding: 18px; margin-bottom: 10px; border: 1px solid #e2e8f0; border-radius: 12px; background: white; text-align: left; font-size: 1rem; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s ease; }
-        .item-btn:hover { background: #f8faff; border-color: var(--accent); transform: translateY(-2px); }
+        .item-meta { display: flex; align-items: center; gap: 10px; color: var(--secondary-text); }
+        .item-rango { font-size: 0.9rem; }
+        .arrow { font-size: 1.2rem; font-weight: 300; }
 
+        /* Vista Detalle */
         #vista-detalle { display: none; padding: 20px; }
-        .btn-volver { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 25px; }
-        .ficha { background: #f8fafc; border-left: 4px solid var(--accent); padding: 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0; }
-        .label { display: block; font-size: 0.7rem; color: #718096; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
-        .valor { font-size: 1.05rem; color: var(--primary); line-height: 1.6; white-space: pre-wrap; }
+        .btn-volver { 
+            background: none; border: none; font-weight: bold; cursor: pointer; 
+            margin-bottom: 30px; display: flex; align-items: center; gap: 10px;
+        }
+        .ficha { margin-bottom: 30px; }
+        .label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: var(--secondary-text); letter-spacing: 1px; }
+        .valor { font-size: 1.1rem; margin-top: 8px; line-height: 1.7; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <div id="vista-lista">
-            <div class="header"><h1>Consultas Jurídicas</h1></div>
+            <div class="header">
+                <h1>Constitución Política<br>de Colombia</h1>
+            </div>
             
             <div class="selector-tabs">
-                <button class="tab-btn active" onclick="cambiarFuente('principal', this)">Lista 1</button>
-                <button class="tab-btn" onclick="cambiarFuente('lista2', this)">Lista 2</button>
-                <button class="tab-btn" onclick="cambiarFuente('lista3', this)">Lista 3</button>
+                <button class="tab-btn active" onclick="cambiarFuente('principal', this)">Constitución</button>
+                <button class="tab-btn" onclick="cambiarFuente('lista2', this)">Códigos</button>
+                <button class="tab-btn" onclick="cambiarFuente('lista3', this)">Leyes</button>
             </div>
 
-            <div id="status" style="padding: 40px; text-align: center; color: #718096;">Cargando base de datos...</div>
-            <ul id="contenedor-lista" class="lista-datos"></ul>
+            <div id="status" style="padding: 40px; text-align: center; color: var(--secondary-text);">Cargando...</div>
+            <div id="contenedor-lista" class="lista-datos"></div>
         </div>
 
         <div id="vista-detalle">
@@ -51,34 +114,26 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN: Agrega aquí tus URLs de Google Sheets
         const FUENTES = {
             principal: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRr8NFZhCq5GALDDC5QzyIGI6DRblNuHItzFP94KY1j9ZExpyfkf6PXMAQgbZxLUtEqakeRcXOqcP0q/pub?output=csv',
-            lista2: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQjnaXAs3VUJ6W-dVarTePZWtcv5KQBuvKBm1J2yDDGd7VzfnEQC0hZ4-_5MoLkV0hPsS7mgmzX53DC/pub?output=csv',
-            lista3: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTU78hYBwAIMsjk--_IHvqK99KBklk7vN-dSmjknQXMceXQ_O383QM_sAXXA-c7bfMA-4gv6MpczFHi/pub?output=csv'
+            lista2: 'URL_LISTA_2',
+            lista3: 'URL_LISTA_3'
         };
 
         let DB = [];
 
         function parseCSV(text) {
             const result = [];
-            let row = [];
-            let cell = '';
-            let inQuotes = false;
+            let row = [], cell = '', inQuotes = false;
             for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const next = text[i+1];
+                const char = text[i], next = text[i+1];
                 if (char === '"') {
                     if (inQuotes && next === '"') { cell += '"'; i++; }
                     else { inQuotes = !inQuotes; }
                 } 
                 else if (char === ',' && !inQuotes) { row.push(cell.trim()); cell = ''; }
                 else if ((char === '\n' || char === '\r') && !inQuotes) {
-                    if (cell || row.length > 0) {
-                        row.push(cell.trim());
-                        result.push(row);
-                        cell = ''; row = [];
-                    }
+                    if (cell || row.length > 0) { row.push(cell.trim()); result.push(row); cell = ''; row = []; }
                 } 
                 else { cell += char; }
             }
@@ -89,47 +144,53 @@
         async function cargarDatos(url) {
             const status = document.getElementById('status');
             const lista = document.getElementById('contenedor-lista');
-            
             status.style.display = 'block';
-            status.innerText = "Cargando datos...";
             lista.innerHTML = '';
 
             try {
                 const res = await fetch(url);
                 const rawData = await res.text();
                 const todasLasFilas = parseCSV(rawData);
-                todasLasFilas.shift(); // Quitar encabezados
+                todasLasFilas.shift(); 
                 DB = todasLasFilas.filter(f => f[0] && f[0].length > 0);
                 renderizar(DB);
                 status.style.display = 'none';
             } catch (e) {
-                status.innerText = "Error al conectar con los datos.";
+                status.innerText = "Error al cargar datos.";
             }
-        }
-
-        function cambiarFuente(clave, elemento) {
-            // Cambiar estado visual de los botones
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            elemento.classList.add('active');
-            
-            // Cargar la nueva URL
-            cargarDatos(FUENTES[clave]);
         }
 
         function renderizar(datos) {
             const lista = document.getElementById('contenedor-lista');
             lista.innerHTML = '';
-            datos.forEach((fila) => {
-                const indexOriginal = DB.indexOf(fila);
-                const li = document.createElement('li');
-                li.innerHTML = `<button class="item-btn" onclick="verDetalle(${indexOriginal})">${fila[0]}</button>`;
-                lista.appendChild(li);
+            datos.forEach((fila, index) => {
+                // fila[0] = Capítulo, fila[1] = Nombre, fila[2] = Rango Artículos
+                const btn = document.createElement('button');
+                btn.className = 'item-row';
+                btn.onclick = () => verDetalle(index);
+                btn.innerHTML = `
+                    <div class="item-info">
+                        <span class="item-titulo">${fila[0]}</span>
+                        <span class="item-subtitulo">${fila[1] || ''}</span>
+                    </div>
+                    <div class="item-meta">
+                        <span class="item-rango">${fila[2] || ''}</span>
+                        <span class="arrow">›</span>
+                    </div>
+                `;
+                lista.appendChild(btn);
             });
+        }
+
+        function cambiarFuente(clave, elemento) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            elemento.classList.add('active');
+            cargarDatos(FUENTES[clave]);
         }
 
         function verDetalle(idx) {
             const r = DB[idx];
-            const labels = ["Capítulo", "Nombre", "Artículos", "Contenido"];
+            const labels = ["Sección", "Título", "Artículos", "Contenido"];
             let html = '';
             for(let i=0; i<4; i++) {
                 if(r[i]) {
@@ -150,7 +211,6 @@
             document.getElementById('vista-detalle').style.display = 'none';
         }
 
-        // Iniciar con la primera lista
         cargarDatos(FUENTES.principal);
     </script>
 </body>
